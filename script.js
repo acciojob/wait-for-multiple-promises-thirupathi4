@@ -1,48 +1,44 @@
-//your JS code here. If required.
-const output=document.getElementById("output");
+const output = document.getElementById("output");
+
+// 1️⃣ Show loading message with an ID (important for tests)
 output.innerHTML = `
-  <tr>
-    <td colspan="2" class="text-center fw-bold">Loading...</td>
-  </tr>
-`;
+  <tr id="loading">
+    <td colspan="2">Loading...</td>
+  </tr>`;
 
-
-function createPromise(id){
-	const delay = (Math.random() * 2 + 1).toFixed(3); 
-	return new Promise((resolve)=>{
-		setTimeout(()=>{
-			resolve(Number(delay));
-		},delay*1000)
-		
-	});
+// 2️⃣ Function to create a promise with random delay (1–3 seconds)
+function createPromise(index) {
+  const delay = (Math.random() * 2 + 1).toFixed(3);
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(Number(delay));
+    }, delay * 1000);
+  });
 }
-const promises=[createPromise(1),createPromise(2),createPromise(3)];
+
+// 3️⃣ Create all 3 promises
+const promises = [createPromise(1), createPromise(2), createPromise(3)];
+
+// 4️⃣ Start timer to measure total duration
 const startTime = performance.now();
-// 6️⃣ We note the time before starting the promises. 
-// This helps us calculate how long all promises take in total.
 
+// 5️⃣ Wait for all promises to resolve
 Promise.all(promises).then((times) => {
-  // 7️⃣ Promise.all waits until **all 3 promises** are done.
-  // Once they all resolve, this function runs.
-  
-  const endTime = performance.now(); 
-  // 8️⃣ Record time when all promises finished.
-
+  const endTime = performance.now();
   const totalTime = ((endTime - startTime) / 1000).toFixed(3);
-  // 9️⃣ Calculate how long it took in total (in seconds).
 
-  output.innerHTML = ""; 
-  // 🔟 Clear out the "Loading..." message from the table.
+  // 6️⃣ Remove "Loading..." row
+  output.innerHTML = "";
 
+  // 7️⃣ Add rows for each promise
   times.forEach((time, i) => {
-    // 11️⃣ For each resolved promise, add a row to the table.
     const row = document.createElement("tr");
     row.innerHTML = `<td>Promise ${i + 1}</td><td>${time}</td>`;
     output.appendChild(row);
   });
 
+  // 8️⃣ Add total time row
   const totalRow = document.createElement("tr");
-  // 12️⃣ Add the total time row.
   totalRow.innerHTML = `<td>Total</td><td>${totalTime}</td>`;
   output.appendChild(totalRow);
 });
